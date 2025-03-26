@@ -1,3 +1,4 @@
+import 'package:aai/features/auth/screen/login_screen.dart';
 import 'package:aai/theme/pallete.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Reddit Tutorial',
       theme: Pallete.darkModeAppTheme,
-      home: const SizedBox(),
+      home: const LoginScreen(),
     );
   }
 }
