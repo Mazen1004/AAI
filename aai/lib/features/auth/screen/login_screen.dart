@@ -12,7 +12,7 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: Image.asset(
           Constants.logoPath,
-          height: 40,
+          height: 50,
           ),
       ),
       body: Column(

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "223670475129",
+    "project_id": "aai-e3733",
+    "storage_bucket": "aai-e3733.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223670475129:android:95fae970be54606a5177a8",
+        "android_client_info": {
+          "package_name": "com.example.aai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKXodwFXcO_H5j-UIC-QhHeRJBw0NX3-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
