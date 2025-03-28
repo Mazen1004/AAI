@@ -40,6 +40,7 @@ dependencies:
   google_sign_in: ^6.3.0
   flutter_riverpod: ^2.6.1
   firebase_auth: ^5.5.1
+  fpdart: ^1.1.1
 
 dev_dependencies:
   flutter_test:

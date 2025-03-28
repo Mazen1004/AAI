@@ -1,9 +1,15 @@
 import 'package:aai/core/providers/firebase_providers.dart';
+import 'package:aai/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aai/core/constants/constants.dart';
+import 'package:aai/core/constants/firebase_constants.dart';
+import 'package:aai/core/type_defs.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:aai/core/failure.dart';
 
 
 final AuthRepositoryProvider = Provider((ref) => AuthRepository(
@@ -24,7 +30,9 @@ class AuthRepository{
     _firestore = firestore, 
     _googleSignIn = googleSignIn;
 
-  void signInWithGoogle() async {
+    CollectionReference get _users => _firestore.collection(FirebaseConstants.usersCollection);
+
+  FutureEither<UserModel> signInWithGoogle() async {
     try{
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
@@ -37,9 +45,24 @@ class AuthRepository{
 
       UserCredential userCredential = await _auth.signInWithCredential(credential);
 
-      print(userCredential.user?.email);
+      late UserModel userModel;
+
+      if (userCredential.additionalUserInfo!.isNewUser) {
+        userModel = UserModel(
+          name: userCredential.user!.displayName??'No Name',
+          profilePic: userCredential.user!.photoURL??Constants.avatarDefault,
+          banner: Constants.bannerDefault,
+          uid: userCredential.user!.uid,
+          isAuthenticated: true,
+        );
+        await _users.doc(userCredential.user!.uid).set(userModel.toMap());
+      }
+      return right(userModel);
+
+      } on FirebaseException catch (e) {
+        throw e.message!;
       } catch (e) {
-        print(e);
+        return left(Failure(e.toString()));
       }
   }
 
