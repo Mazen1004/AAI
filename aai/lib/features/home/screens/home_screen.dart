@@ -1,3 +1,4 @@
+import 'package:aai/features/home/drawers/profile_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,10 @@ import 'package:aai/features/auth/controller/auth_controller.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  void displayEndDrawer(BuildContext context) {
+    Scaffold.of(context).openEndDrawer();
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,14 +30,19 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.search),
             onPressed: () {}
           ),
-          IconButton(
-            icon: CircleAvatar(
-              backgroundImage: NetworkImage(user.profilePic),
-            ),
-            onPressed: () {},
+          Builder(
+            builder: (context) {
+              return IconButton(
+                icon: CircleAvatar(
+                  backgroundImage: NetworkImage(user.profilePic),
+                ),
+                onPressed: () => displayEndDrawer(context),
+              );
+            }
           ),
         ],
       ),
+      endDrawer: const ProfileDrawer(),
     );
   }
 }
