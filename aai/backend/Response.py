@@ -2,7 +2,8 @@ import google.generativeai as genai
 
 
 def gemini():
-    genai.configure(api_key="AIzaSyAA8nFxwOL9ib2nvmQkCTKXQquehTLtxF0")
+    api_key = input("Enter the api_key: ")
+    genai.configure(api_key=api_key)
 
     model = genai.GenerativeModel("gemini-2.0-flash")
     response = model.generate_content("hello, tell me about yourself")
