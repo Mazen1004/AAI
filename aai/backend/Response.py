@@ -42,8 +42,7 @@ class ExpertResponse:
 
     @staticmethod
     def deepseek(self):
-        api_key = input("Enter the API key: ")
-        api_key = os.environ["OPENROUTER_API_KEY"] = "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"
+        api_key = os.environ["OPENROUTER_API_KEY"] = input("Enter your API key: ").strip()
 
         client = OpenAI (
                         api_key=api_key, 
