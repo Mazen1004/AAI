@@ -1,4 +1,4 @@
-import 'package:aai/features/post/screens/add_post_tag_screen.dart';
+import 'package:aai/features/post/screens/add_post_type_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aai/features/auth/screen/login_screen.dart';
 import 'package:routemaster/routemaster.dart';
