@@ -24,7 +24,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   final descriptionController = TextEditingController();
   final linkController = TextEditingController();
   File? bannerFile;
-  File? bannerWebFile;
+  Uint8List? bannerWebFile;
 
   @override
   void dispose() {
@@ -40,7 +40,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     if (res != null) {
       if (kIsWeb) {
         setState(() {
-          bannerWebFile = res.files.first.bytes as File?;
+          bannerWebFile = res.files.first.bytes as Uint8List?;
         });
       } else {
         setState(() {
@@ -55,7 +55,8 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
       ref.read(postControllerProvider.notifier).shareImagePost(
         context: context, 
         title: titleController.text.trim(), 
-        file: bannerFile
+        file: bannerFile,
+        webfile: bannerWebFile
       );
     } else if(widget.type == 'text' && titleController.text.isNotEmpty) {
       ref.read(postControllerProvider.notifier).shareTextPost(
