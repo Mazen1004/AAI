@@ -9,7 +9,6 @@ import 'package:aai/models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:uuid/uuid.dart';
 
 final postControllerProvider = StateNotifierProvider<PostController, bool>((ref) {
   final postRepository = ref.watch(postRepositoryProvider);
@@ -40,7 +39,7 @@ class PostController extends StateNotifier<bool> {
           required String description,
         }) async {
           state = true;
-          String postId = const Uuid().v1();
+          String postId = title;
           final user = _ref.read(userProvider)!;
 
           final Post post = Post(id: postId, title: title, upvotes: [], downvotes: [], commentCount: 0, username: user.name, uid: user.uid, type: 'text', createdAt: DateTime.now(), description: description);
@@ -59,7 +58,7 @@ class PostController extends StateNotifier<bool> {
           required String link,
         }) async {
           state = true;
-          String postId = const Uuid().v1();
+          String postId = title;
           final user = _ref.read(userProvider)!;
 
           final Post post = Post(id: postId, title: title, upvotes: [], downvotes: [], commentCount: 0, username: user.name, uid: user.uid, type: 'link', createdAt: DateTime.now(), link: link);
@@ -79,7 +78,7 @@ class PostController extends StateNotifier<bool> {
           required Uint8List? webfile
         }) async {
           state = true;
-          String postId = const Uuid().v1();
+          String postId = title;
           final user = _ref.read(userProvider)!;
           final imageRes = await _storageRepository.storeFile(path: 'posts', id: postId, file: file, webFile: webfile);
 
