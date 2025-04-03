@@ -74,47 +74,17 @@ class ExpertResponse:
 
 #run
 def main():
-    load_dotenv()
-    prompt = "The artifact is sharp. It is small, almost the size of a hand, and is black in colour. It also looks like an arrow."
-    img_path = "s-l1200.jpg"  
-
-    # Getting the Base64 string
-    base64_image = ExpertResponse.encodeImage(img_path)
-
-    # OpenAI API Key
-    api_key = os.environ['OPENAI_API_KEY']
-
-
-    headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Bearer {api_key}"
-    }
-
-    payload = {
-    "model": "gpt-4o-mini",
-    "messages": [
-        {
-        "role": "user",
-        "content": [
-            {
-            "type": "text",
-            "text": "can you please describe the image?"
-            },
-            {
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/jpeg;base64,{base64_image}"
-            }
-            }
-        ]
-        }
-    ],
-    "max_tokens": 3000
-    }
-
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-
-    print(response.json())
+    # Instantiate your DeepseekService.
+    # If you haven't provided an API key as an argument, it will load it from your .env file.
+    deepseek =OpenAI()
+    
+    # Call the service. You can pass a dummy prompt here since your class later uses OPENAIAPI_PROMPT_TEMPLATE.
+    description = deepseek.get_artifact_description("Test prompt")
+    
+    # Print the response.
+    print("Artifact Description:")
+    print(description)
+    
 
     #print(ExpertResponse(prompt).response())
 
