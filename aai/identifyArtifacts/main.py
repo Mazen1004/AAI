@@ -1,21 +1,17 @@
 # main.py
 
-import os
-from dotenv import load_dotenv
-from identifyArtifacts.services.openai_service import OpenAIService
+# to run file notes:
+# step 1: cd into aai file path
+# step 2: venv\Scripts\activate  (to activate virtual environment)
+# step 3: python -m identifyArtifacts.main (to run our main file)
+
+from identifyArtifacts.identifyArtifacts import IdentifyArtifacts
 
 def main():
-    # Load environment variables (API keys, etc.) from .env
-    load_dotenv()
-
-    # Instantiate the service
-    service = OpenAIService()
-
-    # Call the service to get the description
-    answer = service.get_artifact_description()
-
-    print("OpenAIService Answer:")
-    print(answer)
+    artifact_identifier = IdentifyArtifacts()
+    description = artifact_identifier.analyze_artifact()
+    print("Artifact Description:")
+    print(description)
 
 if __name__ == "__main__":
 
