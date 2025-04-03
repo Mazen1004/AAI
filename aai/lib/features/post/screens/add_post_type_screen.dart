@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aai/core/constants/constants.dart';
 import 'package:aai/core/utils.dart';
+import 'package:aai/features/post/controller/post_controller.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,13 +40,37 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     if (res != null) {
       if (kIsWeb) {
         setState(() {
-          bannerWebFile = res.files.first.bytes;
+          bannerWebFile = res.files.first.bytes as File?;
         });
       } else {
         setState(() {
           bannerFile = File(res.files.first.path!);
         });
       }
+    }
+  }
+
+  void sharePost() {
+    if(widget.type == 'image' && bannerFile!=null && titleController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareImagePost(
+        context: context, 
+        title: titleController.text.trim(), 
+        file: bannerFile
+      );
+    } else if(widget.type == 'text' && titleController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareTextPost(
+        context: context, 
+        title: titleController.text.trim(), 
+        description: descriptionController.text.trim(),
+      );
+    } else if(widget.type == 'link' && titleController.text.isNotEmpty && linkController.text.isNotEmpty) {
+      ref.read(postControllerProvider.notifier).shareLinkPost(
+        context: context, 
+        title: titleController.text.trim(), 
+        link: linkController.text.trim(),
+      );
+    } else {
+      showSnackBar(context, 'Please enter all the fields');
     }
   }
 
@@ -59,7 +84,8 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Post ${widget.type}'),
-        actions: [TextButton(onPressed: () {}, child: const Text('Share'))]
+        actions: [TextButton(onPressed: sharePost, 
+        child: const Text('Share'))]
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -92,7 +118,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: bannerWebFile != null
-                            ? Image.memory(bannerWebFile!)
+                            ? Image.memory(bannerWebFile! as Uint8List)
                             : bannerFile != null
                                 ? Image.file(bannerFile!)
                                 : const Center(
