@@ -20,6 +20,12 @@ final postControllerProvider = StateNotifierProvider<PostController, bool>((ref)
   );
 });
 
+final userPostsProvider = StreamProvider((ref) {
+  final postController = ref.watch(postControllerProvider.notifier);
+
+  return postController.fetchUserPosts();
+});
+
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
@@ -95,4 +101,8 @@ class PostController extends StateNotifier<bool> {
 
           
         }
+
+  Stream<List<Post>> fetchUserPosts() {
+    return _postRepository.fetchUserPosts(); // may give error if empty; timestamp 6:46 if need to fix
+  }
 }

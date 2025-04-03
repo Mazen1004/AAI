@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aai/core/common/loader.dart';
 import 'package:aai/core/constants/constants.dart';
 import 'package:aai/core/utils.dart';
 import 'package:aai/features/post/controller/post_controller.dart';
@@ -80,7 +81,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     final isTypeImage = widget.type == 'image';
     final isTypeText = widget.type == 'text';
     final isTypeLink = widget.type == 'link';
-
+    final isLoading = ref.watch(postControllerProvider);
     
     return Scaffold(
       appBar: AppBar(
@@ -88,7 +89,9 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
         actions: [TextButton(onPressed: sharePost, 
         child: const Text('Share'))]
       ),
-      body: Padding(
+      body:isLoading 
+      ? const Loader() :
+       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column( 
           children: [

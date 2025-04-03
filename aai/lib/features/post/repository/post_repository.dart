@@ -28,4 +28,19 @@ class PostRepository {
       return left(Failure(e.toString()));
     }
   }
+
+  Stream<List<Post>> fetchUserPosts() {
+    return _posts
+      .orderBy('createdAt', descending: true)
+      .snapshots()
+      .map(
+        (event) => event.docs
+          .map(
+            (e) => Post.fromMap(
+              e.data() as Map<String, dynamic>
+            )
+          )
+        .toList()
+      );
+  }
 }
