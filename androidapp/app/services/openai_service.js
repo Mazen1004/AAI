@@ -9,25 +9,17 @@ class OpenAIService {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${apiKey}`
         };
-        console.log(headers);
 
         const payload = {
-            model: "gpt-4o-mini",
+            model: "gpt-4o-mini",  // Ensure that the model supports image processing (if applicable)
             messages: [
                 {
                     role: "user",
-                    content: [
-                        {
-                            type: "text",
-                            text: prompt
-                        },
-                        {
-                            type: "image_url",
-                            image_url: {
-                                url: `data:image/jpeg;base64,${base64Image}`
-                            }
-                        }
-                    ]
+                    content: prompt  // Text-based prompt for artifact description
+                },
+                {
+                    role: "user",
+                    content: `Data:image/jpeg;base64,${base64Image}`  // Base64 image (or URL if supported)
                 }
             ],
             max_tokens: 3000
@@ -41,7 +33,7 @@ class OpenAIService {
 
             return content;
         } catch (error) {
-            console.error("Error during API call:", error);
+            console.error("Error during API call:", error.response?.data || error.message);
             return "Error: Unable to fetch the response from OpenAI.";
         }
     }
