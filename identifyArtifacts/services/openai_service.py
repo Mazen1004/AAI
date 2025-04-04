@@ -1,9 +1,9 @@
 import os
 import requests
 from dotenv import load_dotenv
-from identifyArtifacts.services.expert_service import AIService
-from identifyArtifacts.utilities.image_encoder import encodeImage
-from identifyArtifacts.prompts import OPENAIAPI_PROMPT_TEMPLATE
+from services.expert_service import AIService
+from utilities.image_encoder import encodeImage
+from prompts import OPENAIAPI_PROMPT_TEMPLATE
 
 class OpenAIService(AIService):        
     def get_artifact_description(self, api_key: str, base64_image: str ) -> str:
