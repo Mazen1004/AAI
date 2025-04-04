@@ -17,10 +17,10 @@ class OpenAIService {
                     role: "user",
                     content: prompt  // Text-based prompt for artifact description
                 },
-                {
-                    role: "user",
-                    content: `Data:image/jpeg;base64,${base64Image}`  // Base64 image (or URL if supported)
-                }
+                //{
+                  //  role: "user",
+                    //content: `Data:image/jpeg;base64,${base64Image}`  // Base64 image (or URL if supported)
+                //}
             ],
             max_tokens: 3000
         };
