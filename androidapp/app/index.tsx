@@ -41,14 +41,14 @@ const App = () => {
           return;
         }
         // Call the Gemini-based analysis with the selected image
-        description = await artifactIdentifier.analyzeArtifactwithGemini(selectedImage);
+        description = await artifactIdentifier.analyzeAndStoreArtifact(selectedImage, "image");
       } else if (inputType === "text") {
         if (!userInput) {
           setResponse("Please enter a description text.");
           return;
         }
         // Call the OpenAI-based analysis with the provided text description
-        description = await artifactIdentifier.analyzeArtifactwithOpenAI(userInput);
+          description = await artifactIdentifier.analyzeAndStoreArtifact(userInput, "text");
       }
       setResponse(description);
     } catch (error) {

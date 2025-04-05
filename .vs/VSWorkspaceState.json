@@ -1,15 +1,17 @@
 {
   "ExpandedNodes": [
     "",
-    "\\aai",
     "\\aai\\android",
     "\\aai\\android\\app",
     "\\aai\\android\\app\\src",
-    "\\aai\\android\\app\\src\\debug",
     "\\aai\\android\\app\\src\\main",
     "\\aai\\assets",
     "\\aai\\windows",
-    "\\aai\\windows\\runner"
+    "\\aai\\windows\\runner",
+    "\\identifyArtifacts",
+    "\\identifyArtifacts\\venv",
+    "\\identifyArtifacts\\venv\\Scripts"
   ],
+  "SelectedNode": "\\identifyArtifacts\\app.py",
   "PreviewInSolutionExplorer": false
 }
