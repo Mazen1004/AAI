@@ -1,4 +1,4 @@
-// identifyArtifacts/IdentifyArtifacts.js
+﻿// identifyArtifacts/IdentifyArtifacts.js
 const { getBase64FromUri } = require('../utilities/image_encoder'); // Assuming you've defined this utility
 import { OpenAIService } from '../services/openai_service';
 import { GeminiAIService } from '../services/gemini_service';
@@ -14,7 +14,35 @@ class IdentifyArtifacts {
     if (!this.apiKeyOpenAI) {
       throw new Error("Gemini Key not found. Please set EXPO_PUBLIC_GEMINI_API_KEY in your environment.");
     }
+
+    this.history = []; // Stores processed artifacts: { type, input, description }
   }
+
+    async analyzeAndStoreArtifact(input, type) {
+        let description = "";
+
+        if (type === "image") {
+            description = await this.analyzeArtifactwithGemini(input);
+        } else if (type === "text") {
+            description = await this.analyzeArtifactwithOpenAI(input);
+        } else {
+            throw new Error("Invalid input type. Must be 'image' or 'text'.");
+        }
+
+        this.history.push({
+            type,
+            input,
+            description,
+            timestamp: new Date().toISOString(), // optional: to track when it was added
+        });
+
+        return description;
+    }
+
+    // Optional: Method to retrieve history
+    async getHistory() {
+        return this.history;
+    }
 
   //Handles Images
   async analyzeArtifactwithOpenAI(imageURL) {
