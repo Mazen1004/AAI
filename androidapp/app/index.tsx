@@ -36,7 +36,7 @@ const App = () => {
     // Create an instance of IdentifyArtifacts
     const artifactIdentifier = new IdentifyArtifacts();
     // analyzeArtifact expects the raw file or URI
-    const description = await artifactIdentifier.analyzeArtifact(image);
+    const description = await artifactIdentifier.analyzeArtifactwithGemini(image);
     setResponse(description);
   };
 

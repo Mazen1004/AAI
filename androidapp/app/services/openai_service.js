@@ -2,9 +2,9 @@ import axios from 'axios';
 import { OPENAIAPI_PROMPT_TEMPLATE } from '../utilities/prompts.js'; // Assuming this is the correct path
 
 class OpenAIService {
-    async getArtifactDescription(apiKey, base64Image) {
-        const prompt = OPENAIAPI_PROMPT_TEMPLATE.replace("{base64_image}", base64Image);
-
+    async getArtifactDescription(apiKey, imageURL) {
+        const prompt = OPENAIAPI_PROMPT_TEMPLATE;
+        
         const headers = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${apiKey}`
@@ -17,10 +17,10 @@ class OpenAIService {
                     role: "user",
                     content: prompt  // Text-based prompt for artifact description
                 },
-                //{
-                  //  role: "user",
-                    //content: `Data:image/jpeg;base64,${base64Image}`  // Base64 image (or URL if supported)
-                //}
+                {
+                    role: "user",
+                    content: imageURL  // Image URL
+                }
             ],
             max_tokens: 3000
         };
