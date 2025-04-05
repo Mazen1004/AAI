@@ -1,11 +1,11 @@
 // processImageWithGemini.js
-import { OPENAIAPI_PROMPT_TEMPLATE } from '../utilities/prompts.js'; // Assuming this is the correct path
+import { GEMINI_PROMPT_TEMPLATE } from '../utilities/prompts.js'; // Assuming this is the correct path
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 class GeminiAIService {
     async getArtifactDescription(apiKey, base64Image) {
         try {
-            const prompt = OPENAIAPI_PROMPT_TEMPLATE;
+            const prompt = GEMINI_PROMPT_TEMPLATE;
             // Instantiate the top-level client
             const genAI = new GoogleGenerativeAI(apiKey);
 
