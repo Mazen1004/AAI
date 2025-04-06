@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TextInput, Button, Image, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Switch, Platform } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import IdentifyArtifacts from "./identifyArtifacts/identifyArtifacts"; // Adjust the import based on your package structure
@@ -10,6 +10,8 @@ const App = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  // Switch state: false means manual mode (left), true means AI mode (right)
+  const [isAIMode, setIsAIMode] = useState(true); 
 
   const selectImage = async () => {
     // Use the Expo ImagePicker to let user select an image
@@ -33,7 +35,9 @@ const App = () => {
     setLoading(true);
     const artifactIdentifier = new IdentifyArtifacts();
     let description = "";
-    
+    // Determine mode: if isAIMode is true, then use "ai" classification; otherwise "manual"
+    const mode = isAIMode ? "ai" : "manual";
+
     try {
       if (inputType === "image") {
         if (!selectedImage) {
@@ -47,8 +51,8 @@ const App = () => {
           setResponse("Please enter a description text.");
           return;
         }
-        // Always pass "text"; manual classification is triggered inside IdentifyArtifacts if text starts with ";"
-        description = await artifactIdentifier.analyzeAndStoreArtifact(userInput, "text");
+        // Always pass "text" and let IdentifyArtifacts decide based on the mode
+        description = await artifactIdentifier.analyzeAndStoreArtifact(userInput, "text", mode);
       }
       setResponse(description);
     } catch (error) {
@@ -77,6 +81,26 @@ const App = () => {
         <Picker.Item label="Describe with Text" value="text" />
       </Picker>
 
+      {/* If text mode is active, show the toggle for Manual/AI classification */}
+      {inputType === "text" && (
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleLabel}> </Text>
+          <View style={styles.switchContainer}>
+            {/* Display current mode label */}
+            <Text style={styles.modeLabel}>{isAIMode ? "AI" : "Manual"}</Text>
+            <Switch
+              value={isAIMode}
+              onValueChange={(value) => {
+                setIsAIMode(value);
+                setUserInput(""); // Clear the input field on toggle
+              }}
+              trackColor={{ false: "#767577", true: "#eab676" }}
+              thumbColor={isAIMode ? "#e28743" : "#f4f3f4"}
+            />
+          </View>
+        </View>
+      )}
+
       {/* If input type is image, show a button to pick an image; otherwise show a text input */}
       {inputType === "image" ? (
         <TouchableOpacity onPress={selectImage} style={styles.uploadButton}>
@@ -85,7 +109,8 @@ const App = () => {
       ) : (
         <TextInput
           style={styles.input}
-          placeholder="Enter description... (use ';' for manual keywords)"
+          placeholder={isAIMode ? "Enter Description..." : "Enter: attribute1, attribute2, attribute3..."}
+          placeholderTextColor="#000"
           onChangeText={setUserInput}
           value={userInput}
         />
@@ -96,10 +121,13 @@ const App = () => {
         <Image source={{ uri: selectedImage.uri }} style={styles.previewImage} />
       )}
 
-      {/* Button to send data to AI */}
-      <Button title="Send to AI Experts" onPress={handleSubmit} />
+      {/* Button label changes based on mode */}
+      <Button
+        title={inputType === "text" ? (isAIMode ? "Send to AI Experts" : "Use Manual Algorithm") : "Send"}
+        onPress={handleSubmit}
+      />
 
-      {/* Display loading animation or the response inside a ScrollView for scrolling if needed */}
+      {/* Display loading animation or the response inside a ScrollView */}
       {loading ? (
         <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: 20 }} />
       ) : (
@@ -130,6 +158,26 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginVertical: 10,
     borderRadius: 5,
+  },
+  toggleContainer: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  toggleLabel: {
+    color: "white",
+    fontSize: 16,
+  },
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  modeLabel: {
+    color: "white",
+    marginRight: 8,
+    fontSize: 16,
   },
   uploadButton: {
     backgroundColor: "gray",

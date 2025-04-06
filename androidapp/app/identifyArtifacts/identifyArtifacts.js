@@ -7,37 +7,18 @@ import { GeminiAIService } from '../services/gemini_service';
 import { ManualArtifactClassifier } from '../services/manual_service';
 
 class IdentifyArtifacts {
-  constructor() {
-    const apiUrlOpenAI = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
-    const apiUrlGemini = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
-    this.apiKeyGemini = apiUrlGemini;
-    this.apiKeyOpenAI = apiUrlOpenAI;
-    if (!this.apiKeyOpenAI) {
-      throw new Error("OpenAI API Key not found. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment.");
-    }
-    if (!this.apiKeyGemini) {
-      throw new Error("Gemini Key not found. Please set EXPO_PUBLIC_GEMINI_API_KEY in your environment.");
-    }
-
-    this.history = []; // Stores processed artifacts: { type, input, description }
-
-    // >>> ADDED: Instantiate a manual classifier instance <<<
-    this.manualClassifier = new ManualArtifactClassifier();
-  }
-
-  async analyzeAndStoreArtifact(input, type) {
+  // Added third parameter "mode" for text classification; default "ai"
+  async analyzeAndStoreArtifact(input, type, mode = "ai") {
     let description = "";
 
     if (type === "image") {
       description = await this.analyzeArtifactwithGemini(input);
     } 
     else if (type === "text") {
-      // If text starts with ";" then do manual classification; otherwise do GPT
-      if (input.startsWith(";")) {
-        const trimmed = input.slice(1);
-        const result = this.manualClassifier.classify(trimmed);
-    
-        // Compute a brief confidence explanation:
+      if (mode === "manual") {
+        const result = this.manualClassifier.classify(input);
+        
+        // Compute confidence explanation based on result.confidence:
         let confidenceExplanation;
         switch(result.confidence) {
           case "very low":
@@ -58,7 +39,7 @@ class IdentifyArtifacts {
           default:
             confidenceExplanation = "Insufficient information to determine confidence.";
         }
-    
+
         // Provide an expanded explanation for each category:
         let categoryExplanation;
         switch(result.category) {
@@ -72,7 +53,7 @@ class IdentifyArtifacts {
             categoryExplanation = "Items in this group are made of metal and often serve practical or combative functions, such as swords, daggers, or other edged tools. They are recognized by their sharp edges and robust construction.";
             break;
           case "Adornment/Jewelry Artifact":
-            categoryExplanation = "This category covers small, decorative items worn as jewelry. These artifacts are typically elegant, shiny, and designed to enhance personal appearance using precious metals and stones.";
+            categoryExplanation = "This category covers small decorative items worn as personal adornments. They are typically elegant, shiny, and designed to enhance personal appearance using precious metals and stones.";
             break;
           case "Ceramic/Pottery Artifact":
             categoryExplanation = "Artifacts made from clay or ceramics, this group includes vessels such as pots, jars, or bowls. They are often handmade and characterized by textured surfaces and traditional glazes.";
@@ -84,25 +65,23 @@ class IdentifyArtifacts {
             categoryExplanation = "This group comprises items made from glass or crystal, known for their transparency, fragility, and reflective qualities. They often exhibit modern elegance and a luminous finish.";
             break;
           case "Coin/Currency Artifact":
-            categoryExplanation = "Artifacts in this category are small, minted objects that serve as currency or collectibles. They are marked by their uniform, metallic appearance and often carry historical significance.";
+            categoryExplanation = "Artifacts in this category are small, minted objects used as currency or collected as relics. They are marked by their uniform, metallic appearance and often carry historical significance.";
             break;
           case "Technology/Device Artifact":
             categoryExplanation = "This category includes modern or historical devices featuring mechanical or electronic components. These artifacts are designed for functionality and often showcase sleek, innovative designs.";
             break;
           case "Religious/Spiritual Artifact":
-            categoryExplanation = "These artifacts hold ceremonial or sacred significance, frequently used in religious practices. They are rich in symbolism, often featuring intricate engravings and spiritual motifs.";
+            categoryExplanation = "These artifacts hold ceremonial or sacred significance, frequently used in religious practices. They are rich in symbolism and often feature intricate engravings and spiritual motifs.";
             break;
           default:
             categoryExplanation = "A general artifact category that does not fit into a specific group.";
         }
-    
+
         description = `~Manual Classification~\n\nPredicted Artifact Class --> ${result.category.toUpperCase()}:\n\n${categoryExplanation}\n\nConfidence Level --> ${result.confidence.toUpperCase()}:\n\n${confidenceExplanation}`;
-      }
-      else {
+      } else {
         description = await this.analyzeArtifactwithOpenAI(input);
       }
-    }
-    
+    } 
     else {
       throw new Error("Invalid input type. Must be 'image' or 'text'.");
     }
@@ -128,7 +107,6 @@ class IdentifyArtifacts {
       // Instantiate the OpenAI service and pass the user text
       const service = new OpenAIService();
       const description = await service.getArtifactDescription(this.apiKeyOpenAI, text);
-      
       return description;
     } catch (error) {
       throw new Error(`Error analyzing artifact: ${error.message}`);
@@ -144,11 +122,28 @@ class IdentifyArtifacts {
       // Instantiate the GeminiAI service and pass the base64 image
       const service = new GeminiAIService();
       const description = await service.getArtifactDescription(this.apiKeyGemini, base64Image);
-      
       return description;
     } catch (error) {
       throw new Error(`Error analyzing artifact: ${error.message}`);
     }
+  }
+
+  constructor() {
+    const apiUrlOpenAI = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+    const apiUrlGemini = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+    this.apiKeyGemini = apiUrlGemini;
+    this.apiKeyOpenAI = apiUrlOpenAI;
+    if (!this.apiKeyOpenAI) {
+      throw new Error("OpenAI API Key not found. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment.");
+    }
+    if (!this.apiKeyGemini) {
+      throw new Error("Gemini Key not found. Please set EXPO_PUBLIC_GEMINI_API_KEY in your environment.");
+    }
+
+    this.history = []; // Stores processed artifacts: { type, input, description }
+
+    // Instantiate a manual classifier instance
+    this.manualClassifier = new ManualArtifactClassifier();
   }
 }
 
