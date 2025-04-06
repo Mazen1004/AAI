@@ -47,8 +47,15 @@ const App = () => {
           setResponse("Please enter a description text.");
           return;
         }
-        // Call the OpenAI-based analysis with the provided text description
+
+        // >>> ADDED: If userInput starts with ';', do manual classification <<<
+        if (userInput.startsWith(";")) {
+          const trimmed = userInput.slice(1); // remove leading semicolon
+          description = await artifactIdentifier.analyzeAndStoreArtifact(trimmed, "text");
+        } else {
+          // Call the OpenAI-based analysis with the provided text description
           description = await artifactIdentifier.analyzeAndStoreArtifact(userInput, "text");
+        }
       }
       setResponse(description);
     } catch (error) {
