@@ -3,7 +3,7 @@ const { getBase64FromUri } = require('../utilities/image_encoder'); // Assuming 
 import { OpenAIService } from '../services/openai_service';
 import { GeminiAIService } from '../services/gemini_service';
 
-// >>> ADDED: Import or define your manual classifier <<<
+// >>> ADDED: Import the manual classifier service <<<
 import { ManualArtifactClassifier } from '../services/manual_service';
 
 class IdentifyArtifacts {
@@ -32,17 +32,77 @@ class IdentifyArtifacts {
       description = await this.analyzeArtifactwithGemini(input);
     } 
     else if (type === "text") {
-      // >>> ADDED: If text starts with ";", do manual classification; otherwise do GPT <<<
+      // If text starts with ";" then do manual classification; otherwise do GPT
       if (input.startsWith(";")) {
-        // Remove the leading semicolon
         const trimmed = input.slice(1);
         const result = this.manualClassifier.classify(trimmed);
-        description = `Manual Classification -> Category: ${result.category} (Matches: ${result.matches})`;
+    
+        // Compute a brief confidence explanation:
+        let confidenceExplanation;
+        switch(result.confidence) {
+          case "very low":
+            confidenceExplanation = "Not enough descriptors provided. Consider adding more details to improve accuracy.";
+            break;
+          case "low":
+            confidenceExplanation = "Limited matching descriptors; try including additional characteristics for clarity.";
+            break;
+          case "medium":
+            confidenceExplanation = "A moderate match. More descriptive words could increase confidence further.";
+            break;
+          case "high":
+            confidenceExplanation = "Strong match. Additional descriptors might further confirm the classification.";
+            break;
+          case "very high":
+            confidenceExplanation = "Excellent match. The odds are very good that this classification is correct.";
+            break;
+          default:
+            confidenceExplanation = "Insufficient information to determine confidence.";
+        }
+    
+        // Provide an expanded explanation for each category:
+        let categoryExplanation;
+        switch(result.category) {
+          case "Textile/Cloth Artifact":
+            categoryExplanation = "These artifacts include items made from fabrics or textiles, such as clothing, drapes, or rugs. They are typically characterized by soft textures, woven patterns, and varied prints.";
+            break;
+          case "Wood/Bone Artifact":
+            categoryExplanation = "This category encompasses objects crafted from wood or bone. They often exhibit natural grain, a rustic finish, and include items like carved utensils or decorative elements.";
+            break;
+          case "Metal/Weapon Artifact":
+            categoryExplanation = "Items in this group are made of metal and often serve practical or combative functions, such as swords, daggers, or other edged tools. They are recognized by their sharp edges and robust construction.";
+            break;
+          case "Adornment/Jewelry Artifact":
+            categoryExplanation = "This category covers small, decorative items worn as jewelry. These artifacts are typically elegant, shiny, and designed to enhance personal appearance using precious metals and stones.";
+            break;
+          case "Ceramic/Pottery Artifact":
+            categoryExplanation = "Artifacts made from clay or ceramics, this group includes vessels such as pots, jars, or bowls. They are often handmade and characterized by textured surfaces and traditional glazes.";
+            break;
+          case "Carved/Statue Artifact":
+            categoryExplanation = "These are sculpted or carved objects that represent figures or abstract forms. They display intricate craftsmanship and artistic expression, ranging from small busts to monumental statues.";
+            break;
+          case "Glass/Crystal Artifact":
+            categoryExplanation = "This group comprises items made from glass or crystal, known for their transparency, fragility, and reflective qualities. They often exhibit modern elegance and a luminous finish.";
+            break;
+          case "Coin/Currency Artifact":
+            categoryExplanation = "Artifacts in this category are small, minted objects that serve as currency or collectibles. They are marked by their uniform, metallic appearance and often carry historical significance.";
+            break;
+          case "Technology/Device Artifact":
+            categoryExplanation = "This category includes modern or historical devices featuring mechanical or electronic components. These artifacts are designed for functionality and often showcase sleek, innovative designs.";
+            break;
+          case "Religious/Spiritual Artifact":
+            categoryExplanation = "These artifacts hold ceremonial or sacred significance, frequently used in religious practices. They are rich in symbolism, often featuring intricate engravings and spiritual motifs.";
+            break;
+          default:
+            categoryExplanation = "A general artifact category that does not fit into a specific group.";
+        }
+    
+        description = `~Manual Classification~\n\nPredicted Artifact Class --> ${result.category.toUpperCase()}:\n\n${categoryExplanation}\n\nConfidence Level --> ${result.confidence.toUpperCase()}:\n\n${confidenceExplanation}`;
       }
       else {
         description = await this.analyzeArtifactwithOpenAI(input);
       }
-    } 
+    }
+    
     else {
       throw new Error("Invalid input type. Must be 'image' or 'text'.");
     }

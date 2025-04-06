@@ -1,77 +1,106 @@
-// manual_service.js
-
 export const categories = [
     {
-      name: "Textiles",
+      name: "Textile/Cloth Artifact",
       keywords: [
-        "woven","cloth","fabric","threads","soft","frayed",
-        "flexible","garment","stitched","tapestry"
+        "soft", "woven", "fabric", "threads", "thin", "light",
+        "draped", "smooth", "rough", "colorful", "faded", "patterned",
+        "delicate", "frayed", "crinkled", "wrinkled", "airy", "printed",
+        "cotton", "woolly", "silken", "textured", "loose", "vibrant",
+        "dyed", "casual", "elegant", "shirt", "scarf", "rug"
       ],
     },
     {
-      name: "Woodwork & Bone",
+      name: "Wood/Bone Artifact",
       keywords: [
-        "wood","bone","grain","carved","organic","ivory",
-        "figurine","handle","whittle","light"
+        "wooden", "bone", "carved", "aged", "rough", "smooth",
+        "grainy", "rustic", "natural", "sturdy", "weathered", "chipped",
+        "worn", "polished", "refined", "organic", "solid", "hard",
+        "coarse", "split", "burnt", "layered", "fibrous", "raw",
+        "earthy", "firm", "vintage", "table", "chair", "spoon"
       ],
     },
     {
-      name: "Weapons",
+      name: "Metal/Weapon Artifact",
       keywords: [
-        "blade","dagger","spear","axe","sword","hammer",
-        "rust","weapon","combat","edge"
+        "sharp", "pointed", "jagged", "heavy", "metallic", "edged",
+        "honed", "dangerous", "robust", "rugged", "durable", "precise",
+        "cutting", "efficient", "striking", "balanced", "lethal", "functional",
+        "utilitarian", "sleek", "compact", "cold", "forceful", "refined",
+        "engineered", "sword", "dagger", "spear", "axe", "hammer"
       ],
     },
     {
-      name: "Jewelry",
+      name: "Adornment/Jewelry Artifact",
       keywords: [
-        "ring","bracelet","necklace","earring","gem","silver",
-        "gold","ornate","beads","wear"
+        "small", "shiny", "delicate", "ornate", "polished", "sparkling",
+        "refined", "elegant", "bright", "lustrous", "dainty", "compact",
+        "chic", "exquisite", "glimmering", "graceful", "intricate", "timeless",
+        "fine", "decorative", "radiant", "brilliant", "subtle", "classy",
+        "sophisticated", "ring", "necklace", "bracelet", "earring", "gem"
       ],
     },
     {
-      name: "Pottery",
+      name: "Ceramic/Pottery Artifact",
       keywords: [
-        "clay","ceramic","bowl","jar","vessel","glaze",
-        "plate","pot","cup","earthenware"
+        "clay", "ceramic", "round", "curved", "flat", "glazed",
+        "rough", "textured", "brittle", "earthy", "handmade", "fired",
+        "vintage", "rustic", "porous", "smooth", "uneven", "matte",
+        "functional", "simple", "traditional", "weathered", "fragile", "durable",
+        "authentic", "artisanal", "aged", "pot", "jar", "bowl"
       ],
     },
     {
-      name: "Sculpture",
+      name: "Carved/Statue Artifact",
       keywords: [
-        "statue","stone","carve","figure","bust","monument",
-        "relief","chiselled","marble","sculpt"
+        "carved", "heavy", "solid", "detailed", "angular", "geometric",
+        "smooth", "rough", "monumental", "expressive", "abstract", "refined",
+        "robust", "sturdy", "crafted", "artistic", "lifelike", "sculpted",
+        "dynamic", "balanced", "timeless", "imposing", "statuesque", "elegant",
+        "complex", "powerful", "intricate", "textured", "bold", "bust"
       ],
     },
     {
-      name: "Glassware",
+      name: "Glass/Crystal Artifact",
       keywords: [
-        "glass","transparent","fragile","bottle","flask","vase",
-        "bead","translucent","window","cup"
+        "glass", "transparent", "fragile", "shiny", "smooth", "glossy",
+        "clear", "delicate", "reflective", "curved", "crisp", "luminous",
+        "pristine", "modern", "elegant", "cool", "refined", "vibrant",
+        "sparkling", "light", "pure", "ethereal", "sleek", "radiant",
+        "polished", "subtle", "airy", "bright", "vivid", "flawless"
       ],
     },
     {
-      name: "Coins",
+      name: "Coin/Currency Artifact",
       keywords: [
-        "coin","currency","mint","round","stamp","denomination",
-        "numismatic","tarnish","metallic","face"
+        "coin", "currency", "minted", "round", "flat", "small",
+        "metallic", "worn", "polished", "aged", "engraved", "uniform",
+        "collectible", "historic", "sturdy", "shiny", "copper", "silver",
+        "bronze", "relic", "tiny", "embossed", "classic", "circular",
+        "weathered", "refined", "durable", "economic", "standard", "balanced"
       ],
     },
     {
-      name: "Technology/Devices",
+      name: "Technology/Device Artifact",
       keywords: [
-        "device","mechanical","gear","electronic","dial","circuit",
-        "machine","parts","tool","modern"
+        "device", "mechanical", "electronic", "compact", "modern", "functional",
+        "sleek", "innovative", "digital", "precise", "robust", "complex",
+        "smart", "efficient", "advanced", "engineered", "technical", "modular",
+        "portable", "futuristic", "agile", "streamlined", "automated", "versatile",
+        "reliable", "durable", "intuitive", "sophisticated", "integrated", "ergonomic"
       ],
     },
     {
-      name: "Religious/Spiritual Artifacts",
+      name: "Religious/Spiritual Artifact",
       keywords: [
-        "ritual","deity","icon","temple","prayer","amulet",
-        "sacred","altar","symbol","faith"
+        "ritual", "sacred", "icon", "holy", "revered", "symbolic",
+        "spiritual", "ceremonial", "engraved", "simple", "ornate", "timeless",
+        "blessed", "meditative", "profound", "divine", "mystical", "ancient",
+        "modest", "radiant", "austere", "hallowed", "inspirational", "pure",
+        "contemplative", "venerable", "emblematic", "transcendent", "serene", "devotional"
       ],
     },
   ];
+  
   
   export class ManualArtifactClassifier {
     constructor() {
@@ -96,16 +125,33 @@ export const categories = [
             matchCount++;
           }
         }
-  
         if (matchCount > bestMatchCount) {
           bestMatchCount = matchCount;
           bestCategory = category.name;
         }
       }
   
+      // Determine confidence level based on bestMatchCount:
+      // 1 - very low, 2 - low, 3 - medium, 4 - high, 5+ - very high
+      let confidence;
+      if (bestMatchCount >= 5) {
+        confidence = "very high";
+      } else if (bestMatchCount === 4) {
+        confidence = "high";
+      } else if (bestMatchCount === 3) {
+        confidence = "medium";
+      } else if (bestMatchCount === 2) {
+        confidence = "low";
+      } else if (bestMatchCount === 1) {
+        confidence = "very low";
+      } else {
+        confidence = "none";
+      }
+  
       return {
         category: bestCategory,
         matches: bestMatchCount,
+        confidence: confidence,
       };
     }
   }

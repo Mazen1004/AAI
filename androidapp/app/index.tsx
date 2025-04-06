@@ -47,15 +47,8 @@ const App = () => {
           setResponse("Please enter a description text.");
           return;
         }
-
-        // >>> ADDED: If userInput starts with ';', do manual classification <<<
-        if (userInput.startsWith(";")) {
-          const trimmed = userInput.slice(1); // remove leading semicolon
-          description = await artifactIdentifier.analyzeAndStoreArtifact(trimmed, "text");
-        } else {
-          // Call the OpenAI-based analysis with the provided text description
-          description = await artifactIdentifier.analyzeAndStoreArtifact(userInput, "text");
-        }
+        // Always pass "text"; manual classification is triggered inside IdentifyArtifacts if text starts with ";"
+        description = await artifactIdentifier.analyzeAndStoreArtifact(userInput, "text");
       }
       setResponse(description);
     } catch (error) {
@@ -92,7 +85,7 @@ const App = () => {
       ) : (
         <TextInput
           style={styles.input}
-          placeholder="Enter description..."
+          placeholder="Enter description... (use ';' for manual keywords)"
           onChangeText={setUserInput}
           value={userInput}
         />
