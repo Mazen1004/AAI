@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, Button, Image, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import IdentifyArtifacts from "./identifyArtifacts/identifyArtifacts"; // Adjust the import based on your package structure
@@ -99,11 +99,13 @@ const App = () => {
       {/* Button to send data to AI */}
       <Button title="Send to AI Experts" onPress={handleSubmit} />
 
-      {/* Display loading animation or the response */}
+      {/* Display loading animation or the response inside a ScrollView for scrolling if needed */}
       {loading ? (
         <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: 20 }} />
       ) : (
-        <Text style={styles.output}>{response}</Text>
+        <ScrollView style={{ maxHeight: 150, width: "80%" }}>
+          <Text style={styles.output}>{response}</Text>
+        </ScrollView>
       )}
     </View>
   );
@@ -146,7 +148,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: "gray",
     borderWidth: 1,
-    width: "80%",
   },
 });
 
