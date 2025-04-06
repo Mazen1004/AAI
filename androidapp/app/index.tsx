@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, Image, TouchableOpacity, StyleSheet, Act
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import IdentifyArtifacts from "./identifyArtifacts/identifyArtifacts"; // Adjust the import based on your package structure
+import { StatusBar } from "expo-status-bar";
 
 const App = () => {
   const [inputType, setInputType] = useState("image"); // "image" or "text"
@@ -63,9 +64,14 @@ const App = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+        {/* Top left logo */}
+        <View style={styles.topLeftLogoContainer}>
+            <Image source={require("./assets/images/logo.png")} style={styles.topLeftLogo} />
+        </View>
+        <StatusBar style="light" backgroundColor="#000" translucent={false} />
       <Text style={styles.header}>Identify Your Artifact!</Text>
-      <Image source={require("./assets/images/logo.png")} style={styles.logo} />
+      <Image source={require("./assets/images/loginEmote.png")} style={styles.logo} resizeMode="contain" />
 
       {/* Picker for selecting input type */}
       <Picker
@@ -110,7 +116,7 @@ const App = () => {
         <TextInput
           style={styles.input}
           placeholder={isAIMode ? "Enter Description..." : "Enter: attribute1, attribute2, attribute3..."}
-          placeholderTextColor="#000"
+          placeholderTextColor="#fff"
           onChangeText={setUserInput}
           value={userInput}
         />
@@ -122,27 +128,35 @@ const App = () => {
       )}
 
       {/* Button label changes based on mode */}
-      <Button
-        title={inputType === "text" ? (isAIMode ? "Send to AI Experts" : "Use Manual Algorithm") : "Send"}
-        onPress={handleSubmit}
-      />
+      <TouchableOpacity style={styles.sendButton} onPress={handleSubmit}>
+        <Text style={styles.sendButtonText}>
+            {inputType === "text" ? (isAIMode ? "Send to AI Experts" : "Use Manual Algorithm") : "Send"}
+        </Text>
+        </TouchableOpacity>
 
       {/* Display loading animation or the response inside a ScrollView */}
       {loading ? (
         <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: 20 }} />
       ) : (
-        <ScrollView style={{ maxHeight: 150, width: "80%" }}>
+        <ScrollView style={{ maxHeight: 1000, width: "80%" }}>
           <Text style={styles.output}>{response}</Text>
         </ScrollView>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#000" },
-  header: { fontSize: 24, fontWeight: "bold", color: "white", marginBottom: 20 },
-  logo: { width: "50%", height: "50%", marginBottom: 20 },
+  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#000", paddingTop: 50 },
+  header: { fontSize: 24, fontWeight: "bold", color: "white", marginBottom: 20, marginTop: 70 },
+  logo: {
+    width: 300,
+    height: 300,
+    resizeMode: "contain",
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  
   picker: {
     height: 50,
     width: "80%",
@@ -151,13 +165,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 10,
     justifyContent: "center",
+    marginBottom: 50,
   },
   input: {
     width: "80%",
     padding: 10,
-    backgroundColor: "white",
+    backgroundColor: "#383838",
     marginVertical: 10,
     borderRadius: 5,
+    color: "white",
   },
   toggleContainer: {
     width: "80%",
@@ -192,11 +208,49 @@ const styles = StyleSheet.create({
   },
   output: {
     color: "white",
-    marginTop: 20,
+    marginTop: 30,
     padding: 10,
-    borderColor: "gray",
+    borderColor: "#383838",
     borderWidth: 1,
   },
+  sendButton: {
+    backgroundColor: "#444", // or keep it black or gray for contrast
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 6,
+    marginTop: 15,
+  },
+  
+  sendButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000",
+    paddingTop: 50,
+    paddingBottom: 100, // Adds breathing room to scroll past bottom
+  },
+
+  topLeftLogoContainer: {
+    paddingTop: 20,
+    position: "absolute",
+    top: 40, // adjust based on status bar height
+    left: 20,
+    zIndex: 10,
+  },
+  
+  topLeftLogo: {
+    width: 55,
+    height: 55,
+    resizeMode: "contain",
+  },
+  
 });
 
 export default App;
