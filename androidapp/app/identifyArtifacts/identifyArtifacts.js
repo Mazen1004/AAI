@@ -11,7 +11,7 @@ class IdentifyArtifacts {
     if (!this.apiKeyOpenAI) {
       throw new Error("OpenAI API Key not found. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment.");
     }
-    if (!this.apiKeyGeminiAI) {
+    if (!this.apiKeyGemini) {
       throw new Error("Gemini Key not found. Please set EXPO_PUBLIC_GEMINI_API_KEY in your environment.");
     }
 
